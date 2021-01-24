@@ -1,0 +1,639 @@
+openapi: 3.0.0
+info:
+  title: Digi Ex API
+  description: Digital Expence API for cooperates
+  version: 1.0.0
+servers:
+  - url: http://localhost:7080
+    description: Local Server
+  - url: https://api-digiex.vtest.site
+    description: Dev Server
+  - url: https://dev-digiex.digitalservices.lk/dialog/api/
+    description: Dialog Server
+
+paths:
+  /auth/login/plain:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Login'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Token'
+
+  /auth/add-token:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /auth/remove-token:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Token'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+  /auth/replace-token:
+    post:
+      tags:
+        - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ReplaceToken'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /users/profile:
+    get:
+      tags:
+        - Users
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Profile'
+
+  /request-categories:
+    get:
+      tags:
+        - Request Category
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RequestCategory'
+
+  /currencies:
+    get:
+      tags:
+        - Currency
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Currency'
+
+  /entities:
+    get:
+      tags:
+        - Entity
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Entity'
+
+  /staff-advance-categories:
+    get:
+      tags:
+        - Staff Advance Category
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffAdvanceCategory'
+
+  /expense-categories:
+    get:
+      tags:
+        - Expense Category
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExpenseCategory'
+
+  /attachments:
+    get:
+      tags:
+        - Attachment
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Attachment'
+  /attachments/upload:
+    post:
+      tags:
+        - Attachment
+      parameters:
+        - in: path
+          name: type
+          required: true
+          schema:
+            type: string
+            enum: [bill, slip]
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                properties:
+                  key:
+                    type: string
+  /attachments/upload-multiple:
+    post:
+      tags:
+        - Attachment
+      parameters:
+        - in: path
+          name: type
+          required: true
+          schema:
+            type: string
+            enum: [bill, slip]
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                files:
+                  type: array
+                  items:
+                    type: string
+                    format: binary
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                properties:
+                  keys:
+                    type: array
+                    items:
+                      type: string
+
+  /payment-requests:
+    post:
+      tags:
+        - Payment Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PaymentRequestCreate'
+      responses:
+        201:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+    get:
+      tags:
+        - Payment Request
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PaymentRequestResponse'
+  /payment-requests/id/{id}:
+    get:
+      tags:
+        - Payment Request
+      parameters:
+        - in: path
+          name: id
+          description: 'Payment request ID'
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentRequestResponse'
+
+  /payment-requests/staff-advance:
+    get:
+      tags:
+        - Payment Request
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StaffAdvancePaymentResponse'
+
+  /payment-requests/approve:
+    post:
+      tags:
+        - Payment Request
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ApproveRequest'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /notifications:
+    get:
+      tags:
+        - Notifications
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NotificationResponse'
+  /notifications/read/{id}:
+    put:
+      tags:
+        - Notifications
+      parameters:
+        - in: path
+          name: id
+          description: 'Notification id'
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ApiResponse'
+
+  /petty-cash:
+    get:
+      tags:
+        - Petty Cash
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaymentRequestResponse'
+
+  /vendors:
+    get:
+      tags:
+        - Vendor
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Vendor'
+
+components:
+  schemas:
+    ApiResponse:
+      properties:
+        data:
+          type: object
+        message:
+          type: string
+        status:
+          type: string
+        statusCode:
+          type: number
+
+    Login:
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+
+    Token:
+      properties:
+        token:
+          type: string
+
+    ReplaceToken:
+      properties:
+        oldToken:
+          type: string
+        newToken:
+          type: string
+
+    Profile:
+      properties:
+        _id:
+          type: string
+        oid:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        displayName:
+          type: string
+        email:
+          type: string
+        pricipalName:
+          type: string
+
+    RequestCategory:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+        displayTypes:
+          type: array
+          items:
+            type: string
+
+    Currency:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+
+    Entity:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+
+    StaffAdvanceCategory:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+
+    ExpenseCategory:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+
+    Attachment:
+      properties:
+        _id:
+          type: string
+        key:
+          type: string
+        url:
+          type: string
+
+    PaymentRequestCreate:
+      properties:
+        requestCategory:
+          $ref: '#/components/schemas/RequestCategory'
+        entity:
+          $ref: '#/components/schemas/Entity'
+        expenseCategory:
+          $ref: '#/components/schemas/ExpenseCategory'
+        staffAdvanceCategory:
+          $ref: '#/components/schemas/StaffAdvanceCategory'
+        description:
+          type: string
+        budgetCode:
+          type: string
+        currency:
+          $ref: '#/components/schemas/Currency'
+        vendor:
+          $ref: '#/components/schemas/Vendor'
+        settlementDate:
+          type: string
+        bills:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bill'
+        slips:
+          type: array
+          items:
+            $ref: '#/components/schemas/Slip'
+
+    PaymentRequestResponse:
+      properties:
+        _id:
+          type: string
+        displayType:
+          type: string
+          enum: [HISTORY, REQUESTS]
+        requestCategory:
+          type: string
+        entity:
+          type: string
+        expenseCategory:
+          type: string
+        staffAdvanceCategory:
+          type: string
+        description:
+          type: string
+        currency:
+          type: string
+        employee:
+          $ref: '#/components/schemas/User'
+        vendor:
+          type: string
+        total:
+          type: number
+        status:
+          type: string
+          enum: [APPROVED, REJECTED, PENDING]
+
+    StaffAdvancePaymentResponse:
+      properties:
+        _id:
+          type: string
+        requestCategory:
+          $ref: '#/components/schemas/RequestCategory'
+        entity:
+          $ref: '#/components/schemas/Entity'
+        expenseCategory:
+          $ref: '#/components/schemas/ExpenseCategory'
+        staffAdvanceCategory:
+          $ref: '#/components/schemas/StaffAdvanceCategory'
+        description:
+          type: string
+        currency:
+          $ref: '#/components/schemas/Currency'
+        settlementDate:
+          type: string
+        employee:
+          $ref: '#/components/schemas/User'
+        budgetCode:
+          type: string
+        total:
+          type: number
+        status:
+          type: string
+        requestRef:
+          type: number
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+
+    Bill:
+      properties:
+        _id:
+          type: string
+        number:
+          type: string
+        date:
+          type: string
+        supplier:
+          type: string
+        billRef:
+          type: string
+        value:
+          type: number
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+
+    Slip:
+      properties:
+        _id:
+          type: string
+        reference:
+          type: string
+        date:
+          type: string
+        value:
+          type: number
+        attachments:
+          type: array
+          items:
+            $ref: '#/components/schemas/Attachment'
+
+    User:
+      properties:
+        _id:
+          type: string
+
+    ApproveRequest:
+      properties:
+        paymentRequestId:
+          type: string
+        action:
+          type: string
+          enum: [APPROVED, REJECTED, PAID, 'REQUESTED_FOR_RESUBMISSION']
+        rejectReason:
+          type: string
+
+    NotificationResponse:
+      properties:
+        _id:
+          type: string
+        requestCategory:
+          type: string
+        paymentRequestId:
+          type: string
+        date:
+          type: string
+        value:
+          type: number
+        status:
+          type: string
+          enum: [APPROVED, REJECTED]
+
+    Vendor:
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        code:
+          type: string
+
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+security:
+  - bearerAuth: []
